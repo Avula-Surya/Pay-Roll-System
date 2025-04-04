@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Payroll System</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        width: 80%;
+        max-width: 1200px;
+        margin: 50px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      .modules {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .module {
+        background: #007bff;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .module:hover {
+        background: #0056b3;
+      }
+
+      .employee-list {
+        margin-top: 20px;
+      }
+
+      .employee {
+        background: #28a745;
+        color: white;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .employee:hover {
+        background: #218838;
+      }
+
+      .back-btn {
+        margin-top: 20px;
+        padding: 10px 15px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .back-btn:hover {
+        background: #c82333;
+      }
+
+      .employee-details {
+        background: #f8f9fa;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+      }
+
+      .employee-details p {
+        font-size: 16px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Page -->
+    <div class="container" id="main-page">
+      <h1>Employee Payroll System</h1>
+      <div class="modules">
+        <div class="module" onclick="showModule('CEO')">CEO</div>
+        <div class="module" onclick="showModule('Manager')">Manager</div>
+        <div class="module" onclick="showModule('HR')">HR</div>
+        <div class="module" onclick="showModule('Legal Team')">Legal Team</div>
+        <div class="module" onclick="showModule('Event Coordinator')">
+          Event Coordinator
+        </div>
+        <div class="module" onclick="showModule('Interns')">Interns</div>
+        <div class="module" onclick="showModule('IT Support')">IT Support</div>
+        <div class="module" onclick="showModule('Customer Service')">
+          Customer Service
+        </div>
+        <div class="module" onclick="showModule('Marketing Specialist')">
+          Marketing Specialist
+        </div>
+        <div class="module" onclick="showModule('Team Leader')">
+          Team Leader
+        </div>
+      </div>
+    </div>
+
+    <!-- Module Page (List of Employees in each Module) -->
+    <div class="container" id="module-page" style="display: none">
+      <h1 id="module-title"></h1>
+      <div id="employee-list"></div>
+      <button class="back-btn" onclick="goBack()">Back</button>
+    </div>
+
+    <!-- Employee Page (Detailed Information about Employee) -->
+    <div class="container" id="employee-page" style="display: none">
+      <h1>Employee Details</h1>
+      <div class="employee-details" id="employee-details">
+        <!-- Employee details will appear here dynamically -->
+      </div>
+      <button class="back-btn" onclick="goBack()">Back</button>
+    </div>
+
+    <script>
+      // Employee Data for all modules
+      const employeesData = {
+        CEO: [
+          {
+            name: "John Doe",
+            role: "CEO",
+            salary: "$150,000",
+            projects: ["Company Strategy", "Financial Oversight"],
+          },
+        ],
+        Manager: [
+          {
+            name: "Alice Johnson",
+            role: "Operations Manager",
+            salary: "$80,000",
+            projects: ["Efficiency Plan", "Process Optimization"],
+          },
+          {
+            name: "David Clark",
+            role: "Project Manager",
+            salary: "$75,000",
+            projects: ["New Product Development", "Resource Allocation"],
+          },
+        ],
+        HR: [
+          {
+            name: "Mark Davis",
+            role: "HR Manager",
+            salary: "$70,000",
+            projects: ["Employee Training", "Policy Implementation"],
+          },
+          {
+            name: "Samantha Lee",
+            role: "HR Coordinator",
+            salary: "$65,000",
+            projects: ["Onboarding Process", "Workplace Culture"],
+          },
+        ],
+        "Legal Team": [
+          {
+            name: "Laura Williams",
+            role: "Legal Advisor",
+            salary: "$90,000",
+            projects: ["Contract Management", "Risk Compliance"],
+          },
+          {
+            name: "Richard Kim",
+            role: "Compliance Officer",
+            salary: "$85,000",
+            projects: ["Regulatory Adherence", "Risk Assessment"],
+          },
+        ],
+        "Event Coordinator": [
+          {
+            name: "Mia Roberts",
+            role: "Event Planner",
+            salary: "$60,000",
+            projects: ["Annual Gala", "Corporate Events"],
+          },
+          {
+            name: "James Parker",
+            role: "Logistics Coordinator",
+            salary: "$55,000",
+            projects: ["Vendor Management", "Event Logistics"],
+          },
+        ],
+        Interns: [
+          {
+            name: "Lily Adams",
+            role: "Marketing Intern",
+            salary: "$30,000",
+            projects: ["Social Media Strategy", "Market Research"],
+          },
+          {
+            name: "Kevin White",
+            role: "Tech Intern",
+            salary: "$32,000",
+            projects: ["Software Testing", "Prototype Development"],
+          },
+        ],
+        "IT Support": [
+          {
+            name: "Ryan Hall",
+            role: "IT Administrator",
+            salary: "$75,000",
+            projects: ["Network Security", "System Optimization"],
+          },
+          {
+            name: "Olivia Green",
+            role: "Helpdesk Specialist",
+            salary: "$65,000",
+            projects: ["User Support", "System Setup"],
+          },
+        ],
+        "Customer Service": [
+          {
+            name: "Sophia King",
+            role: "Customer Support Rep",
+            salary: "$50,000",
+            projects: ["Client Relations", "Issue Resolution"],
+          },
+          {
+            name: "Daniel Carter",
+            role: "Call Center Lead",
+            salary: "$55,000",
+            projects: ["Team Training", "Service Improvement"],
+          },
+        ],
+        "Marketing Specialist": [
+          {
+            name: "Emily Scott",
+            role: "Brand Strategist",
+            salary: "$70,000",
+            projects: ["Ad Campaigns", "SEO Optimization"],
+          },
+          {
+            name: "Michael Brown",
+            role: "Digital Marketing Expert",
+            salary: "$72,000",
+            projects: ["Google Ads", "Email Marketing"],
+          },
+        ],
+        "Team Leader": [
+          {
+            name: "Jacob Evans",
+            role: "Software Team Lead",
+            salary: "$90,000",
+            projects: ["Agile Project Management", "Software Deployment"],
+          },
+          {
+            name: "Emma Thompson",
+            role: "Sales Team Lead",
+            salary: "$88,000",
+            projects: ["Lead Generation", "Sales Forecasting"],
+          },
+        ],
+      };
+
+      // Show Module Page (Employee List)
+      function showModule(module) {
+        document.getElementById("main-page").style.display = "none";
+        document.getElementById("module-page").style.display = "block";
+        document.getElementById("module-title").innerText = module;
+
+        const employeeList = document.getElementById("employee-list");
+        employeeList.innerHTML = ""; // Clear previous employees
+
+        employeesData[module].forEach((emp) => {
+          const empDiv = document.createElement("div");
+          empDiv.className = "employee";
+          empDiv.innerText = emp.name;
+          empDiv.onclick = () => showEmployeeDetails(emp);
+          employeeList.appendChild(empDiv);
+        });
+      }
+
+      // Show Employee Details
+      function showEmployeeDetails(emp) {
+        document.getElementById("module-page").style.display = "none";
+        document.getElementById("employee-page").style.display = "block";
+
+        const empDetails = document.getElementById("employee-details");
+        empDetails.innerHTML = `
+                <p><strong>Name:</strong> ${emp.name}</p>
+                <p><strong>Role:</strong> ${emp.role}</p>
+                <p><strong>Salary:</strong> ${emp.salary}</p>
+                <p><strong>Projects:</strong> ${emp.projects.join(", ")}</p>
+            `;
+      }
+
+      // Go Back to Previous Page
+      function goBack() {
+        document.getElementById("main-page").style.display = "block";
+        document.getElementById("module-page").style.display = "none";
+        document.getElementById("employee-page").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
